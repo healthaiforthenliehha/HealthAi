@@ -1,0 +1,47 @@
+{
+  "expo": {
+    "name": "HealthAi",
+    "scheme": "healthai",
+    "slug": "HealthAi",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "package": "com.health.ai",
+      "config": {
+        "usesHealthKit": true
+      },
+      "infoPlist": {
+        "NSHealthShareUsageDescription": "Diese App benötigt Zugriff auf Ihre Gesundheitsdaten, um Ihre täglichen Schritte anzuzeigen."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "react-native-health",
+        {
+          "healthSharePermission": "Allow HealthAi to check health info.",
+          "healthUpdatePermission": "Allow HealthAi to update health info.",
+          "isClinicalDataEnabled": false,
+          "healthClinicalDescription": "Allow HealthAi to check clinical health info."
+        }
+      ]
+    ]
+  }
+}
