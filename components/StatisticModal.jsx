@@ -8,13 +8,15 @@ import { useGlobalContext } from '../context/GlobalProvider';
 import InfoBox from './InfoBox';
 import { AppState } from 'react-native';
 import Timer from './Timer';
+import useTimer from '../iOS/useTimer';
 
-const App = ({visible, onClose}) => {
+const StatisticModal = () => {
+  const { stopTimerSound } = useTimer();
   const [usageTime, setUsageTime] = useState({ minutes: 0, seconds: 0 });
   const [modalVisible, setModalVisible] = useState(false);
   const { stepCount, isPedometerAvailable } = useStepTracker();
   const { user, setUser } = useGlobalContext();
-  const [modalVisibleSecond, setModalVisibleSecond] = useState(false);
+
 
   const [count, setCount] = useState(0);
   const startHour = 7;  // 7 Uhr
@@ -81,12 +83,6 @@ const toggleModal = () => {
     });
   }
 };
-
-const toggleSecondModal = () => {
-  setModalVisibleSecond(!modalVisibleSecond);
-}
-
-
 
   return (
     <> 
@@ -203,51 +199,11 @@ const toggleSecondModal = () => {
               </View>
             </View>
             </TouchableOpacity>
-            
-            <TouchableOpacity
-            onPress={toggleSecondModal}
-            activeOpacity={0.65}
-            >
-            <View className="items-center mt-3">
-              <View
-              className="flex items-center text-base-100 w-full flex-col py-[20px] px-[27px] rounded-lg backdrop-blur-xl bg-primary/70 shadow-lg max-w-[180px]"
-              >
-                
-                <Image  
-                  source={images.placeholder}
-                  className="w-[13vh] h-[12.5vh]"
-                  />
-                  <View className="flex-row">
-                  <Text className="text-base-100 font-medium mt-2 text-center">Start your Meditation</Text>
-                  </View>
-                  
-              </View>
+            <Timer />
             </View>
-            </TouchableOpacity>
-            </View>
-            <Modal
-        transparent={true}
-        visible={modalVisibleSecond}
-        animationType="slide"
-        onRequestClose={toggleSecondModal}
-      >
-        <View className="flex-1 justify-center items-center bg-black/50">
-        <View className="h-[450px] w-2/3 rounded-xl bg-white/95 justify-center items-center">
-        <Timer />
-        <TouchableOpacity
-        onPress={toggleSecondModal}
-        activeOpacity={0.65}
-        > 
-        <View className="mt-6">
-          <Text className="text-base-100 font-pregular">Exit Meditation Timer</Text>
-        </View>
-        </TouchableOpacity>
-        </View>
-        </View>
-      </Modal>
 
     </>
   );
 };
 
-export default App;
+export default StatisticModal;
