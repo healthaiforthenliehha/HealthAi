@@ -7,33 +7,37 @@ const useTimer = () => {
   const [seconds, setSeconds] = useState(0);
   const [milliseconds, setMilliseconds] = useState(0);
   const [isActive, setIsActive] = useState(false);
-  const [sound, setSound] = useState(null);
+  const [sounds, setSounds] = useState([]);
   const [soundLoaded, setSoundLoaded] = useState(false);
 
   useEffect(() => {
-    const loadSound = async () => {
-      const { sound } = await Audio.Sound.createAsync(
-        require('../assets/timer_start1.mp3')
-      );
-      setSound(sound);
+    const loadSounds = async () => {
+      const sound1 = await Audio.Sound.createAsync(require('../assets/timer_start1.mp3'));
+      const sound2 = await Audio.Sound.createAsync(require('../assets/timer_start2.mp3'));
+      const sound3 = await Audio.Sound.createAsync(require('../assets/timer_start3.mp3'));
+      
+      setSounds([sound1.sound, sound2.sound, sound3.sound]);
       setSoundLoaded(true);
     };
-    loadSound();
+    loadSounds();
 
     return () => {
-      if (sound) {
-        sound.stopAsync(); // Entlade den Sound, wenn die Komponente unmontiert wird
-      }
+      sounds.forEach(sound => {
+        if (sound) {
+          sound.stopAsync(); // Entlade die Sounds, wenn die Komponente unmontiert wird
+        }
+      });
     };
   }, []);
 
   const toggleTimer = async () => {
     setIsActive(!isActive);
-    if (soundLoaded && sound) {
+    if (soundLoaded && sounds.length) {
       if (!isActive) {
-        await sound.playAsync();
+        const randomIndex = Math.floor(Math.random() * sounds.length);
+        await sounds[randomIndex].playAsync();
       } else {
-        await sound.stopAsync();
+        sounds.forEach(async (sound) => await sound.stopAsync());
       }
     }
   };
@@ -44,8 +48,8 @@ const useTimer = () => {
     setMinutes(0);
     setSeconds(0);
     setMilliseconds(0);
-    if (soundLoaded && sound) {
-      sound.stopAsync(); // Sound stoppen beim Zurücksetzen
+    if (soundLoaded && sounds.length) {
+      sounds.forEach(async (sound) => await sound.stopAsync()); // Alle Sounds stoppen beim Zurücksetzen
     }
   };
 
@@ -74,13 +78,15 @@ const useTimer = () => {
   }, [isActive, hours, minutes, seconds, milliseconds]);
 
   const stopTimerSound = () => {
-    if (soundLoaded && sound) {
-      sound.stopAsync();
-      sound.setPositionAsync(0); // Setze die Soundposition auf den Anfang zurück
+    if (soundLoaded && sounds.length) {
+      sounds.forEach(async (sound) => {
+        await sound.stopAsync();
+        await sound.setPositionAsync(0); // Setze die Soundposition auf den Anfang zurück
+      });
     }
   };
 
-  return { hours, minutes, seconds, milliseconds, isActive, toggleTimer, resetTimer, stopTimerSound};
+  return { hours, minutes, seconds, milliseconds, isActive, toggleTimer, resetTimer, stopTimerSound };
 };
 
 export default useTimer;
