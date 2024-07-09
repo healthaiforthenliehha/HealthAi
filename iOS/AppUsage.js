@@ -57,7 +57,7 @@ const initTracking = () => {
   });
 
   startTracking(); // Initial start
-  scheduleDailyReset(); // Schedule the daily reset
+  scheduleDailyReset(); // Schedule the daily rese
 };
 
 export { initTracking, getUsageTime, resetTracking };
