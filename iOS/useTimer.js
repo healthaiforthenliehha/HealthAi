@@ -9,6 +9,8 @@ const useTimer = () => {
   const [isActive, setIsActive] = useState(false);
   const [sounds, setSounds] = useState([]);
   const [soundLoaded, setSoundLoaded] = useState(false);
+  const [dailyMinutes, setDailyMinutes] = useState(0);
+  const [timerStart, setTimerStart] = useState(null);
 
   useEffect(() => {
     const loadSounds = async () => {
@@ -31,15 +33,18 @@ const useTimer = () => {
   }, []);
 
   const toggleTimer = async () => {
-    setIsActive(!isActive);
-    if (soundLoaded && sounds.length) {
-      if (!isActive) {
+    if (!isActive) {
+      setTimerStart(new Date()); // Timer-Startzeit speichern
+      if (soundLoaded && sounds.length) {
         const randomIndex = Math.floor(Math.random() * sounds.length);
         await sounds[randomIndex].playAsync();
-      } else {
-        sounds.forEach(async (sound) => await sound.stopAsync());
       }
+    } else {
+      const elapsed = (new Date() - timerStart) / 60000; // Zeit in Minuten berechnen
+      setDailyMinutes(prev => prev + elapsed);
+      sounds.forEach(async (sound) => await sound.stopAsync());
     }
+    setIsActive(!isActive);
   };
 
   const resetTimer = () => {
@@ -77,6 +82,25 @@ const useTimer = () => {
     return () => clearInterval(interval);
   }, [isActive, hours, minutes, seconds, milliseconds]);
 
+  useEffect(() => {
+    const resetDailyMinutes = () => {
+      setDailyMinutes(0);
+    };
+
+    const getNextMidnight = () => {
+      const now = new Date();
+      const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+      return midnight - now;
+    };
+
+    const midnightTimeout = setTimeout(() => {
+      resetDailyMinutes();
+      setInterval(resetDailyMinutes, 24 * 60 * 60 * 1000); // Jeden Tag um Mitternacht zurücksetzen
+    }, getNextMidnight());
+
+    return () => clearTimeout(midnightTimeout);
+  }, []);
+
   const stopTimerSound = () => {
     if (soundLoaded && sounds.length) {
       sounds.forEach(async (sound) => {
@@ -86,7 +110,17 @@ const useTimer = () => {
     }
   };
 
-  return { hours, minutes, seconds, milliseconds, isActive, toggleTimer, resetTimer, stopTimerSound };
+  return { 
+    hours, 
+    minutes, 
+    seconds, 
+    milliseconds, 
+    isActive, 
+    toggleTimer, 
+    resetTimer, 
+    stopTimerSound, 
+    dailyMinutes 
+  };
 };
 
 export default useTimer;

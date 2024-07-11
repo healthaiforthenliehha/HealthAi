@@ -7,7 +7,6 @@ import useStepTracker from '../iOS/useStepTracker';
 import { useGlobalContext } from '../context/GlobalProvider';
 import InfoBox from './InfoBox';
 import { AppState } from 'react-native';
-import Timer from './Timer';
 import useTimer from '../iOS/useTimer';
 
 const StatisticModal = () => {
@@ -16,7 +15,21 @@ const StatisticModal = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const { stepCount, isPedometerAvailable } = useStepTracker();
   const { user, setUser } = useGlobalContext();
+  const { hours, minutes, seconds, milliseconds, isActive, toggleTimer, resetTimer } = useTimer();
+  const [modalVisibleSecond, setModalVisibleSecond] = useState(false);
+  const { dailyMinutes } = useTimer();
 
+const formatTime = (time) => {
+  return `${time < 10 ? '0' + time : time}`;
+};
+
+const handleModalClose = () => {
+  closeModal(setModalVisibleSecond);
+};
+
+const toggleSecondModal = () => {
+  setModalVisibleSecond(!modalVisibleSecond);
+}
 
   const [count, setCount] = useState(0);
   const startHour = 7;  // 7 Uhr
@@ -55,17 +68,16 @@ if (!username) {
 } 
 
 // usagetime
+const updateUsageTime = async () => {
+  const time = await getUsageTime();
+  const minutes = Math.floor(time);
+  const seconds = ((time % 1) * 60).toFixed(0);
+  setUsageTime({ minutes, seconds });
+};
+
 useEffect(() => {
   initTracking();
-
-  const updateUsageTime = async () => {
-    const time = await getUsageTime();
-    const minutes = Math.floor(time);
-    const seconds = ((time % 1) * 60).toFixed(0);
-    setUsageTime({ minutes, seconds });
-  };
-
-  updateUsageTime();
+  updateUsageTime(); // Initiale Aktualisierung
 
   const subscription = AppState.addEventListener('change', updateUsageTime);
   return () => {
@@ -76,11 +88,7 @@ useEffect(() => {
 const toggleModal = () => {
   setModalVisible(!modalVisible);
   if (!modalVisible) {
-    getUsageTime().then((time) => {
-      const minutes = Math.floor(time);
-      const seconds = ((time % 1) * 60).toFixed(0);
-      setUsageTime({ minutes, seconds });
-    });
+    updateUsageTime(); // Aktualisiere die Nutzungszeit, wenn das Modal geöffnet wird
   }
 };
 
@@ -104,7 +112,7 @@ const toggleModal = () => {
                </View>
                <View className="flex-col items-center">
                <Text className="text-3xl mr-1">🧘</Text>
-               <Text className="text-xl text-white mr-2">1</Text>
+               <Text className="text-xl text-white mr-2">{Math.floor(dailyMinutes)}min</Text>
                </View>
                
                
@@ -141,8 +149,9 @@ const toggleModal = () => {
             </View>
 
             <Text className="text-lg text-base-100">📱Screen-Time: {usageTime.minutes} minutes</Text>
-            <Text className="text-lg text-base-100">👟Today's Steps: {stepCount}</Text>
-            <Text className="text-lg text-base-100">🍶Need to drink {count}ml today.</Text>
+            <Text className="text-lg text-base-100 mr-12">👟Today's Steps: {stepCount}</Text>
+            <Text className="text-lg text-base-100 ml-5">🍶Need to drink: {count}ml today</Text>
+            <Text className="text-lg text-base-100 mr-3">🧘You have meditated for {Math.floor(dailyMinutes)} minutes today</Text>
             
             {/* <Text className="text-lg text-base-100">Pedometer Available: {isPedometerAvailable}</Text> */}
           <View className="justify-end items-center mt-8"> 
@@ -199,7 +208,81 @@ const toggleModal = () => {
               </View>
             </View>
             </TouchableOpacity>
-            <Timer />
+            <TouchableOpacity
+            onPress={toggleSecondModal}
+            activeOpacity={0.65}
+            >
+            <View className="items-center mt-3">
+              <View
+              className="flex items-center text-base-100 w-full flex-col py-[20px] px-[27px] rounded-lg backdrop-blur-xl bg-primary/70 shadow-lg max-w-[180px]"
+              >
+                
+                <Image  
+                  source={images.placeholder}
+                  className="w-[13vh] h-[12.5vh]"
+                  />
+                  <View className="flex-row">
+                  <Text className="text-base-100 font-medium mt-2 text-center">Start your Meditation</Text>
+                  </View>
+                  
+              </View>
+            </View>
+            </TouchableOpacity>
+      <Modal
+        transparent={true}
+        visible={modalVisibleSecond}
+        animationType="slide"
+        onRequestClose={handleModalClose}
+      >
+        <View className="flex-1 justify-center items-center bg-black/50">
+        <View className="h-[450px] w-2/3 rounded-xl bg-white/90 justify-center items-center">
+
+        <View className="items-center mt-3">
+         <View className="flex items-center text-base-100 w-full flex-col py-[20px] px-[30px] rounded-lg backdrop-blur-xl bg-primary/70 shadow-lg max-h-[80vh] max-w-[200px]">
+        <Image  
+          source={images.placeholder}
+          className="w-[13vh] h-[12.5vh]"
+        />
+        <View className="flex-row">
+          <Text className="text-base-100 font-psemibold text-xl mt-2 text-center">Timer: <Text className="font-pmedium">{formatTime(hours)}:{formatTime(minutes)}:{formatTime(seconds)}:{formatTime(milliseconds)}</Text></Text>
+        </View>
+        <View className="flex-row mt-2">
+          <TouchableOpacity onPress={toggleTimer} activeOpacity={0.65} className="bg-base-100 px-3 py-2 rounded-md mr-2">
+            <Text className="text-white font-medium"> {isActive ? 'Stop' : 'Start'} </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={resetTimer} activeOpacity={0.65} className="bg-gray-100 px-3 py-2 rounded-md">
+            <Text className="text-base-100 font-medium">Reset</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
+
+    <View className="flex-row">
+          <Text className="text-lg mt-2 text-center font-pmedium">
+            <Text className="text-primary text-2xl font-psemibold">"</Text>
+            Close your eyes and relax<Text className="text-primary text-2xl font-psemibold">"</Text>
+          </Text>
+        </View>
+        <Text className="text-sm mt-1 text-red-500 text-center font-pregular">'Warning, put your headphones out!'</Text>
+        <TouchableOpacity
+         onPress={() => { resetTimer(); toggleSecondModal()} }
+ 
+        activeOpacity={0.65}
+        className="mt-4"
+        > 
+        <View className="flex-row"> 
+        <Image 
+                source={icons.logout}
+                className="w-4 h-4 mt-5 mr-1"
+                resizeMode='contain'
+                />
+              <Text className="mt-4 text-base text-red-500 font-pregular">Exit Modal</Text>
+        </View>
+
+        </TouchableOpacity>
+       </View>
+     </View>
+    </Modal>
             </View>
 
     </>

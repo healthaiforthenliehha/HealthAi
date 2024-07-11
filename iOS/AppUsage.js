@@ -1,4 +1,3 @@
-// AppUsage.js
 import { AppState } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -9,8 +8,10 @@ const startTracking = () => {
 };
 
 const stopTracking = async () => {
+  if (!startTime) return; // Fehler verhindern, falls stopTracking ohne startTracking aufgerufen wird
   const endTime = new Date().getTime();
-  const duration = (endTime - startTime) / 60000; // duration in minutes
+  const duration = (endTime - startTime) / 60000; // Dauer in Minuten
+  startTime = null; // startTime für den nächsten Verfolgungszeitraum zurücksetzen
 
   const usageTime = await AsyncStorage.getItem('usageTime');
   const totalTime = usageTime ? parseFloat(usageTime) + duration : duration;
@@ -41,8 +42,8 @@ const scheduleDailyReset = () => {
 
   const timeUntilMidnight = midnight.getTime() - now.getTime();
 
-  setTimeout(() => {
-    resetTracking();
+  setTimeout(async () => {
+    await resetTracking();
     scheduleDailyReset();
   }, timeUntilMidnight);
 };
@@ -56,8 +57,8 @@ const initTracking = () => {
     }
   });
 
-  startTracking(); // Initial start
-  scheduleDailyReset(); // Schedule the daily rese
+  startTracking(); // Initialer Start
+  scheduleDailyReset(); // Tägliches Zurücksetzen planen
 };
 
 export { initTracking, getUsageTime, resetTracking };

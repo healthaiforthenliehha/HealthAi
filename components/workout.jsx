@@ -1,8 +1,8 @@
 import { View, Text, ScrollView, TouchableOpacity, Image, Modal } from 'react-native'
 import { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { icons } from "../../constants"
-import EmptyState from '../../components/EmptyState'
+import { icons } from "../constants"
+import EmptyState from './EmptyState'
 
 
 
@@ -20,7 +20,7 @@ const toggleModal = () => {
       <ScrollView>
         <View className="items-end justify-end mr-4 mt-4 flex-row">
           <Text className="mb-2 mr-2 text-lg font-pmedium text-base-100">
-           Share your Workout
+           Share your workout
           </Text>
           <TouchableOpacity
           onPress={toggleModal}
@@ -36,10 +36,11 @@ const toggleModal = () => {
         </View>
 
            <EmptyState
-           subtitle="No Workout found until yet"
-           content="Show Ai what your training for!"
+           subtitle="Upload your workout"
+           content="Show Ai what you are training for!"
            customStyles='mt-[18vh]'
          />
+         
 
                
        <Modal

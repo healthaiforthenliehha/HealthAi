@@ -51,21 +51,6 @@ const TabsLayout = () => {
             )
           }}
         />
-      <Tabs.Screen
-          name="workout"
-          options={{
-            title: "Workout",
-            headerShown: false,
-            tabBarIcon: ({ color, focused }) => (
-              <TabIcon
-                icon={icons.home}
-                color={color}
-                name="Workout"
-                focused={focused}
-              />
-            )
-          }}
-        />
         <Tabs.Screen
           name="healthai"
           options={{

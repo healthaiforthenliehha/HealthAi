@@ -19,7 +19,7 @@ const EmptyState = ({ content, subtitle }) => {
       </Text>
 
       <CustomButton
-        content="Let Ai help you to eat more healthy"
+        content="Let Ai help you to improve yourself"
         handlePress={() => router.replace("/home")}
         containerStyles="mt-5 bg-primary"
         textStyles="text-white"
