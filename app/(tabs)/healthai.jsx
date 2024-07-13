@@ -3,7 +3,6 @@ import { SafeAreaView, TextInput, Button, Text, View } from 'react-native';
 import axios from 'axios';
 import { OPENAI_API_KEY } from '@env';
 
-// Überprüfen, ob der API-Schlüssel korrekt geladen wurde
 console.log('Loaded API Key:', OPENAI_API_KEY);
 
 const HealthAi = () => {
