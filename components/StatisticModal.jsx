@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react';
 import { View, Text, Modal, TouchableOpacity, Image, Touchable } from 'react-native';
 import { images } from '../constants';
 import { icons } from '../constants';
-import { initTracking, getUsageTime, resetTracking } from '../iOS/AppUsage';
-import useStepTracker from '../iOS/useStepTracker';
+import { initTracking, getUsageTime, resetTracking } from '../mobile/AppUsage';
+import useStepTracker from '../mobile/useStepTracker';
 import { useGlobalContext } from '../context/GlobalProvider';
 import InfoBox from './InfoBox';
 import { AppState } from 'react-native';
-import useTimer from '../iOS/useTimer';
+import useTimer from '../mobile/useTimer';
 
 const StatisticModal = () => {
   const { stopTimerSound } = useTimer();
@@ -112,7 +112,7 @@ const toggleModal = () => {
                </View>
                <View className="flex-col items-center">
                <Text className="text-3xl mr-1">🧘</Text>
-               <Text className="text-xl text-white mr-2">{Math.floor(dailyMinutes)}min</Text>
+               <Text className="text-xl text-white mr-2">{formatTime(minutes)}min</Text>
                </View>
                
                
@@ -149,9 +149,9 @@ const toggleModal = () => {
             </View>
 
             <Text className="text-lg text-base-100">📱Screen-Time: {usageTime.minutes} minutes</Text>
-            <Text className="text-lg text-base-100 mr-12">👟Today's Steps: {stepCount}</Text>
+            <Text className="text-lg text-base-100">👟Today's Steps: {stepCount}</Text>
             <Text className="text-lg text-base-100 ml-5">🍶Need to drink: {count}ml today</Text>
-            <Text className="text-lg text-base-100 mr-3">🧘You have meditated for {Math.floor(dailyMinutes)} minutes today</Text>
+            <Text className="text-lg text-base-100 mr-3">🧘You have meditated for {formatTime(minutes)} minutes today</Text>
             
             {/* <Text className="text-lg text-base-100">Pedometer Available: {isPedometerAvailable}</Text> */}
           <View className="justify-end items-center mt-8"> 
@@ -244,7 +244,7 @@ const toggleModal = () => {
           className="w-[13vh] h-[12.5vh]"
         />
         <View className="flex-row">
-          <Text className="text-base-100 font-psemibold text-xl mt-2 text-center">Timer: <Text className="font-pmedium">{formatTime(hours)}:{formatTime(minutes)}:{formatTime(seconds)}:{formatTime(milliseconds)}</Text></Text>
+          <Text className="text-base-100 font-psemibold text-xl mt-2 text-center">Timer: <Text className="font-pmedium">{formatTime(hours)}:{formatTime(minutes)}:{formatTime(seconds)}</Text></Text>
         </View>
         <View className="flex-row mt-2">
           <TouchableOpacity onPress={toggleTimer} activeOpacity={0.65} className="bg-base-100 px-3 py-2 rounded-md mr-2">

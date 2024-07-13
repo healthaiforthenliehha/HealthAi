@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import * as Notifications from 'expo-notifications';
 import * as TaskManager from 'expo-task-manager';
+import * as BackgroundFetch from 'expo-background-fetch'
+import Constants from 'expo-constants';
 import { SplashScreen, Stack } from "expo-router";
 import { useFonts } from "expo-font";
 import GlobalProvider from "../context/GlobalProvider";
@@ -41,15 +43,16 @@ const RootLayout = ({ children }) => {
     });
 
     if (!TaskManager.isTaskDefined('DRINK_WATER_NOTIFICATION')) {
-      TaskManager.defineTask('DRINK_WATER_NOTIFICATION', () => {
-        Notifications.scheduleNotificationAsync({
+      TaskManager.defineTask('DRINK_WATER_NOTIFICATION', async () => {
+        console.log("Task is running"); // Debug log
+        await Notifications.scheduleNotificationAsync({
           content: {
-            title: "Erinnerung",
-            body: "Hast du heute schon getrunken?",
+            title: "Notification",
+            body: "Have you drunk enough water today?",
             sound: true,
           },
           trigger: {
-            seconds: 2 * 60 * 60,
+            seconds: 4 * 60 * 60, // alle 4 Stunden
             repeats: true,
           },
         });
@@ -59,7 +62,8 @@ const RootLayout = ({ children }) => {
     const registerTask = async () => {
       try {
         await TaskManager.unregisterAllTasksAsync();
-        await TaskManager.registerTaskAsync('DRINK_WATER_NOTIFICATION');
+        await BackgroundFetch.registerTaskAsync('DRINK_WATER_NOTIFICATION');
+        console.log("Task registered successfully"); // Debug log
       } catch (e) {
         console.error(e);
       }
@@ -108,7 +112,10 @@ async function registerForPushNotificationsAsync() {
     return;
   }
 
-  token = (await Notifications.getExpoPushTokenAsync()).data;
+  token = (await Notifications.getExpoPushTokenAsync({
+    projectId: Constants.expoConfig.extra.eas.projectId,
+  })).data;
+
   return token;
 }
 

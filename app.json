@@ -19,10 +19,16 @@
         "usesHealthKit": true
       },
       "infoPlist": {
-        "NSHealthShareUsageDescription": "Diese App benötigt Zugriff auf Ihre Gesundheitsdaten, um Ihre täglichen Schritte anzuzeigen."
+        "NSHealthShareUsageDescription": "Diese App benötigt Zugriff auf Ihre Gesundheitsdaten, um Ihre täglichen Schritte anzuzeigen.",
+        "UIBackgroundModes": [
+          "fetch"
+        ]
       }
     },
     "android": {
+      "permissions": [
+        "BACKGROUND_FETCH"
+      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -41,7 +47,17 @@
           "isClinicalDataEnabled": false,
           "healthClinicalDescription": "Allow HealthAi to check clinical health info."
         }
-      ]
-    ]
+      ],
+      "expo-font"
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "190ad2d4-99d3-444c-a2bc-7daa0fd69b62"
+      }
+    },
+    "owner": "devadrian"
   }
 }

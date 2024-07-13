@@ -9,7 +9,7 @@ TaskManager.defineTask('DRINK_WATER_NOTIFICATION', () => {
       sound: true,
     },
     trigger: {
-      seconds: 2 * 60 * 60, // alle 2 Stunden
+      seconds: 10, // alle 2 Stunden
       repeats: true,
     },
   });
