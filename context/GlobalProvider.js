@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
+
 import { getCurrentUser } from "../lib/appwrite";
 
 const GlobalContext = createContext();
@@ -15,13 +16,13 @@ const GlobalProvider = ({ children }) => {
         if (res) {
           setIsLoggedIn(true);
           // Überprüfe, ob der Benutzername leer ist und setze ihn auf 'Guest'
-          if (res.username === '') {
-            res.username = 'Guest';
+          if (res.username === "") {
+            res.username = "Guest";
           }
           setUser(res); // Aktualisiere den Benutzerzustand mit dem Benutzernamen
         } else {
           setIsLoggedIn(false);
-          setUser({ username: 'Guest' }); // Setze den Benutzer auf 'Guest', wenn kein Benutzer vorhanden ist
+          setUser({ username: "Guest" }); // Setze den Benutzer auf 'Guest', wenn kein Benutzer vorhanden ist
         }
       })
       .catch((error) => {

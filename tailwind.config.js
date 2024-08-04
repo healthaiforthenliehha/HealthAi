@@ -1,23 +1,23 @@
- /** @type {import('tailwindcss').Config} */
- module.exports = {
+/** @type {import('tailwindcss').Config} */
+module.exports = {
   content: ["./app/**/*.{js,jsx,ts,tsx}", "./components/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
       borderRadius: {
-        'custom-bottom-left': '0 0 0 50%',
-        'custom-card-left': '8% 8% 8% 50%',
-        'custom-card-top-right-and-left': '8% 8% 0% 0%',
+        "custom-bottom-left": "0 0 0 50%",
+        "custom-card-left": "8% 8% 8% 50%",
+        "custom-card-top-right-and-left": "8% 8% 0% 0%",
       },
       colors: {
         primary: "#06AB78",
-        base:{
-         100: "#30313D",
+        base: {
+          100: "#30313D",
         },
         secondary: {
           100: "#1cac78",
           200: "#00a877",
         },
-        content:"#FFFFFF",
+        content: "#FFFFFF",
         background: {
           100: "#CDCDE0",
         },
@@ -33,9 +33,7 @@
         pextrabold: ["Poppins-ExtraBold", "sans-serif"],
         pblack: ["Poppins-Black", "sans-serif"],
       },
-      
     },
   },
-  plugins: [
-  ],
+  plugins: [],
 };

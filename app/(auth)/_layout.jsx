@@ -1,7 +1,9 @@
 import { Stack } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 
+
 const AuthLayout = () => {
+
   return (
      <>
       <Stack>
@@ -11,7 +13,7 @@ const AuthLayout = () => {
         headerShown: false,
         }}
         />
-                <Stack.Screen
+       <Stack.Screen
         name="sign-up"
         options={{
         headerShown: false,

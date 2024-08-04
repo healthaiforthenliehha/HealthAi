@@ -1,18 +1,21 @@
-import { View, Text, Image } from 'react-native';
-import { Tabs, Redirect} from 'expo-router';
+import { View, Text, Image } from "react-native";
+import { Tabs, Redirect } from "expo-router";
 import { icons } from "../../constants";
-
+import { useGlobalContext } from "../../context/GlobalProvider";
 
 const TabIcon = ({ icon, color, name, focused }) => {
   return (
     <View className="items-center justify-center gap-2 mt-2">
       <Image
         source={icon}
-        resizeMode='contain'
+        resizeMode="contain"
         className="w-6 h-6"
         tintColor={color}
       />
-      <Text className={`${focused ? 'font-psemibold' : 'font-pregular'} text-xs`} style={{ color: color }}>
+      <Text
+        className={`${focused ? "font-psemibold" : "font-pregular"} text-xs`}
+        style={{ color: color }}
+      >
         {name}
       </Text>
     </View>
@@ -20,20 +23,23 @@ const TabIcon = ({ icon, color, name, focused }) => {
 };
 
 const TabsLayout = () => {
+  const { isLoading, isLoggedIn } = useGlobalContext();
+
+  if (!isLoading && !isLoggedIn) return <Redirect href="/sign-in" />;
 
   return (
     <>
       <Tabs
         screenOptions={{
           tabBarShowLabel: false,
-          tabBarActiveTintColor: '#06AB78',
-          tabBarInactiveTintColor: '#30313D',
+          tabBarActiveTintColor: "#06AB78",
+          tabBarInactiveTintColor: "#30313D",
           tabBarStyle: {
-            backgroundColor: '#e5e7eb',
+            backgroundColor: "#e5e7eb",
             borderTopWidth: 1,
-            borderTopColor: '#d1d5db',
+            borderTopColor: "#d1d5db",
             height: 84,
-          }
+          },
         }}
       >
         <Tabs.Screen
@@ -48,45 +54,12 @@ const TabsLayout = () => {
                 name="Home"
                 focused={focused}
               />
-            )
-          }}
-        />
-        <Tabs.Screen
-          name="healthai"
-          options={{
-            title: "HealthAi",
-            headerShown: false,
-            tabBarIcon: ({ color, focused }) => (
-              <TabIcon
-                icon={icons.home}
-                color={color}
-                name="HealthAi"
-                focused={focused}
-              />
-            )
-          }}
-        />
-
-        
-        <Tabs.Screen
-          name="profile"
-          options={{
-            title: "Profile",
-            headerShown: false,
-            tabBarIcon: ({ color, focused }) => (
-              <TabIcon
-                icon={icons.profile}
-                color={color}
-                name="Profile"
-                focused={focused}
-              />
-            )
+            ),
           }}
         />
       </Tabs>
     </>
   );
 };
-
 
 export default TabsLayout;

@@ -1,30 +1,55 @@
-import { View, Text, Image, TouchableOpacity, ScrollView, Modal } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { useGlobalContext } from '../../context/GlobalProvider'
-import {images} from '../../constants'
-import {useState, useEffect} from 'react'
-import { LinearGradient } from 'expo-linear-gradient'
-import { router } from 'expo-router'
-import StatisticModal from '../../components/StatisticModal'
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  Modal,
+  Alert,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useGlobalContext } from "../../context/GlobalProvider";
+import { images } from "../../constants";
+import { useState, useEffect } from "react";
+import { LinearGradient } from "expo-linear-gradient";
+import { router } from "expo-router";
+import { SettingsIcon, CircleXIcon } from "lucide-react-native";
+import { signOut } from "../../lib/appwrite";
+import { icons } from "../../constants";
+import InfoBox from "../../components/InfoBox";
+import CustomButton from "../../components/CustomButton";
 
 const Home = () => {
-  const { user, setUser } = useGlobalContext();
- 
-  const handleHospitalChange = () => {
+  const { user, setUser, setIsLoggedIn } = useGlobalContext();
+  const [triggerModal, setTriggerModal] = useState(false);
 
+  const logout = async () => {
+    await signOut();
+    setUser(null);
+    setIsLoggedIn(false);
+
+    router.replace("/sign-in");
+  };
+
+  let username = user?.username;
+  if (!username) {
+    username = "Guest";
   }
-  const [currentTime, setCurrentTime] = useState('');
+
+  const toggleModal = () => {
+    setTriggerModal(!triggerModal);
+  };
 
   const handleAiLink = () => {
-    router.push('/healthai')
-  }
+    router.push("/healthai");
+  };
 
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
-      const hours = now.getHours().toString().padStart(2, '0');
-      const minutes = now.getMinutes().toString().padStart(2, '0');
-      const seconds = now.getSeconds().toString().padStart(2, '0');
+      const hours = now.getHours().toString().padStart(2, "0");
+      const minutes = now.getMinutes().toString().padStart(2, "0");
+      const seconds = now.getSeconds().toString().padStart(2, "0");
       setCurrentTime(`${hours}:${minutes}:${seconds}`);
     };
 
@@ -34,68 +59,126 @@ const Home = () => {
     return () => clearInterval(intervalId);
   }, []);
 
+  const [currentTime, setCurrentTime] = useState("");
+
+  const confirmDelete = () => {
+    Alert.alert(
+      "Function wasnt add until yet",
+      "Return later, to delete your account!"
+    );
+  };
+
+  const confirmNewEmail = () => {
+    Alert.alert(
+      "Function wasnt add until yet",
+      "Return later, to recover your email!"
+    );
+  };
+
+  const confirmNewPassword = () => {
+    Alert.alert(
+      "Function wasnt add until yet",
+      "Return later, to recover your password!"
+    );
+  };
 
   return (
-    
     <SafeAreaView className="h-full bg-gray-200">
-      <ScrollView> 
-
-          <View className="flex my-6 px-4 space-y-6">
-            <View className="flex justify-between items-start flex-row mb-6">
-              <View>
-                <Text className="font-pmedium text-xl text-base-100">
-                  Welcome Back
-                </Text>
-                <Text className="text-3xl font-psemibold text-primary">
-                  {user?.username}
-                </Text>
-                
-              </View>
-            <View className="mt-1.5">
-                <Image
-                  source={images.logoG}
-                  className="w-16 h-16"
-                  resizeMode="contain"
-                />
-              </View>
+      <ScrollView>
+        <View className="flex my-6 px-4 space-y-6">
+          <View className="flex justify-between items-center flex-row mb-6">
+            <View>
+              <Text className="font-pmedium text-xl text-base-100">
+                Welcome Back
+              </Text>
+              <Text className="text-3xl font-psemibold text-primary">
+                {user?.username}
+              </Text>
             </View>
-
-            <TouchableOpacity
-            onPress={handleAiLink}
-            activeOpacity={0.65}
-            >
-            <View className="items-center mt-3">
-              <View
-              className="items-center text-base-100 w-full flex-row pt-8 rounded-custom-card-left backdrop-blur-xl bg-primary/70 shadow-lg"
+            <View>
+              <TouchableOpacity activeOpacity={0.6} onPress={toggleModal}>
+                <View>
+                  <SettingsIcon size={40} color="#06AB78" />
+                </View>
+              </TouchableOpacity>
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={triggerModal}
+                onRequestClose={toggleModal}
               >
-                <View className="relative items-start justify-start"> 
-                <Image  
-                  source={images.placeholder}
-                  className="w-[15vh] h-[17vh] rounded-custom-bottom-left"
-                  />
-                  </View>
-                  <View className="flex-col"> 
-                  <Text className="text-3xl font-psemibold ml-9 mb-3 text-base-100">{`Try out\n`}
-                    <Text className="text-base-100">{`HealthAi!\n`}</Text>
-                    
-                    <Text className="text-base text-base-100">{`your personal Doctor`}</Text></Text>   
+                <View className="flex-1 justify-center items-center bg-black/10 bg-opacity-50">
+                  <View className="w-[40vh] p-6 bg-white h-[60vh] rounded-2xl shadow-lg">
+                    <View className="w-full justify-center items-center mt-6 mb-12">
+                      <TouchableOpacity
+                        onPress={logout}
+                        className="flex w-full items-end mb-10"
+                      >
+                        <Image
+                          source={icons.logout}
+                          resizeMode="contain"
+                          className="w-6 h-6 mr-2"
+                        />
+                        <Text className="text-red-500">Logout</Text>
+                      </TouchableOpacity>
 
+                      <View className="w-16 h-16 border-2 border-primary rounded-lg justify-center items-center">
+                        <Image
+                          source={{ uri: user?.avatar }}
+                          className="w-[90%] h-[90%] rounded-lg"
+                          resizeMode="cover"
+                        />
+                      </View>
+
+                      <View className="mt-4 flex-col">
+                        <InfoBox
+                          content={username}
+                          containerStyles="mt-1"
+                          titleStyles="text-2xl text-base-100"
+                        />
+                      </View>
+                      <CustomButton
+                        content="Reset password"
+                        handlePress={confirmNewPassword}
+                        containerStyles="mt-6 bg-base-100 min-h-[45px] w-10/12 rounded-3xl"
+                        textStyles="text-white"
+                      />
+                      <CustomButton
+                        content="Reset email"
+                        handlePress={confirmNewEmail}
+                        containerStyles="mt-4 bg-base-100 min-h-[45px] w-10/12 rounded-3xl"
+                        textStyles="text-white"
+                      />
+                      <TouchableOpacity
+                        activeOpacity={0.6}
+                        onPress={confirmDelete}
+                      >
+                        <Text className="text-red-500 text-xl font-pmedium mt-4">
+                          Delete your Account
+                        </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={toggleModal}
+                        activeOpacity={0.7}
+                        className="flex-row"
+                      >
+                        <View className="mt-[32px] mr-1">
+                          <CircleXIcon size={20} color="#000000" />
+                        </View>
+                        <Text className="text-base-100 font-psemibold text-lg mt-7">
+                          Close profile
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
                   </View>
-              </View>
+                </View>
+              </Modal>
             </View>
-            </TouchableOpacity>
-            
-            <StatisticModal />
-
-            
-
-            
-            
           </View>
-          </ScrollView>
-          </SafeAreaView>
-    
-  )
-}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
 
-export default Home
+export default Home;

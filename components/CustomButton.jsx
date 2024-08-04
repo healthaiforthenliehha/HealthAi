@@ -1,6 +1,12 @@
-import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 
-const CustomButton = ({content, handlePress, containerStyles, textStyles, isLoading}) => {
+const CustomButton = ({
+  content,
+  handlePress,
+  containerStyles,
+  textStyles,
+  isLoading,
+}) => {
   return (
     <TouchableOpacity
       onPress={handlePress}
@@ -14,7 +20,7 @@ const CustomButton = ({content, handlePress, containerStyles, textStyles, isLoad
         {content}
       </Text>
     </TouchableOpacity>
-  )
-}
+  );
+};
 
-export default CustomButton
+export default CustomButton;
