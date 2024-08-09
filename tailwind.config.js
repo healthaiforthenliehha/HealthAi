@@ -11,15 +11,12 @@ module.exports = {
       colors: {
         primary: "#06AB78",
         base: {
-          100: "#30313D",
-        },
-        secondary: {
-          100: "#1cac78",
-          200: "#00a877",
+          100: "#FFFFFF",
         },
         content: "#FFFFFF",
         background: {
-          100: "#CDCDE0",
+          100: "#161622",
+          200: "#1f1f30",
         },
       },
       fontFamily: {

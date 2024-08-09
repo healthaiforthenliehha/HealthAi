@@ -4,7 +4,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { View, Text, ScrollView, Alert, Image } from "react-native";
 import FormField from "../../components/FormField";
 import CustomButton from "../../components/CustomButton";
-import { images } from "../../constants";
 import { createUser } from "../../lib/appwrite";
 import { useGlobalContext } from "../../context/GlobalProvider";
 
@@ -26,9 +25,6 @@ const SignUp = () => {
     setSubmitting(true);
     try {
       const result = await createUser(form.email, form.password, form.username);
-
-      await account.createVerification("http://localhost:3000/home");
-      Alert.alert("Verification email has been sent!");
       setUser(result);
       setIsLoggedIn(true);
 
@@ -41,10 +37,10 @@ const SignUp = () => {
   };
 
   return (
-    <SafeAreaView className="bg-primary h-full">
+    <SafeAreaView className="bg-background-100 h-full">
       <View className="w-full flex justify-center h-full px-4 my-6">
         <Text className="text-3xl font-semibold text-white mt-10 font-psemibold">
-          Sign Up to HealthAi
+          Sign Up to <Text className="text-primary">HealthAi!</Text>
         </Text>
         <FormField
           title="Username"
@@ -71,18 +67,15 @@ const SignUp = () => {
         <CustomButton
           content="Sign Up"
           handlePress={submit}
-          containerStyles="mt-10"
+          containerStyles="mt-10 bg-primary"
           isLoading={isSubmitting}
         />
 
-        <View className="justify-center pt-5 flex-row gap-2">
+        <View className="justify-center pt-5 flex-row gap-1">
           <Text className="text-lg text-gray-100 font-pregular">
             Already have an account?
           </Text>
-          <Link
-            href="/sign-in"
-            className="text-lg font-psemibold text-base-100"
-          >
+          <Link href="/sign-in" className="text-lg font-psemibold text-primary">
             Sign in!
           </Link>
         </View>

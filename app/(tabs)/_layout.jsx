@@ -33,11 +33,11 @@ const TabsLayout = () => {
         screenOptions={{
           tabBarShowLabel: false,
           tabBarActiveTintColor: "#06AB78",
-          tabBarInactiveTintColor: "#30313D",
+          tabBarInactiveTintColor: "#CDCDE0",
           tabBarStyle: {
-            backgroundColor: "#e5e7eb",
+            backgroundColor: "#161622",
             borderTopWidth: 1,
-            borderTopColor: "#d1d5db",
+            borderTopColor: "#232533",
             height: 84,
           },
         }}
@@ -51,7 +51,7 @@ const TabsLayout = () => {
               <TabIcon
                 icon={icons.home}
                 color={color}
-                name="Home"
+                name="HealthAi"
                 focused={focused}
               />
             ),
